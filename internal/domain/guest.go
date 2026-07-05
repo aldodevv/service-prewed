@@ -10,6 +10,7 @@ type Guest struct {
 	ContextID int64     `json:"context_id"`
 	Name      string    `json:"name"`
 	Slug      string    `json:"slug"`
+	RSVP      *RSVP     `json:"rsvp,omitempty"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }

@@ -2,6 +2,7 @@ package http
 
 import (
 	"net/http"
+	"strings"
 	"service-wedding/internal/domain"
 	"service-wedding/internal/usecase"
 
@@ -92,13 +93,17 @@ func (h *PublicHandler) GetPublicWedding(c *gin.Context) {
 		assets = []domain.Asset{}
 	}
 
+	htmlToRender = strings.ReplaceAll(htmlToRender, "{{guest}}", foundGuest.Name)
+
 	// Respond with payload
 	c.JSON(http.StatusOK, gin.H{
-		"theme":       themeSlug,
-		"guest":       foundGuest.Name,
-		"context":     clientCtx.Name,
-		"render_html": htmlToRender,
-		"assets":      assets,
-		"theme_data":  themeData,
+		"theme":        themeSlug,
+		"guest_id":     foundGuest.ID,
+		"guest":        foundGuest.Name,
+		"context":      clientCtx.Name,
+		"render_html":  htmlToRender,
+		"assets":       assets,
+		"theme_data":   themeData,
+		"content_json": clientCtx.ContentJSON,
 	})
 }

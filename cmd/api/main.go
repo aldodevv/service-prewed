@@ -51,6 +51,7 @@ func main() {
 	guestRepo := postgres.NewGuestRepository(pool)
 	assetRepo := postgres.NewAssetRepository(pool)
 	contactMsgRepo := postgres.NewContactRepository(pool)
+	rsvpRepo := postgres.NewRSVPRepository(pool)
 
 	cldName := os.Getenv("CLOUDINARY_NAME")
 	cldKey := os.Getenv("CLOUDINARY_KEY")
@@ -62,6 +63,7 @@ func main() {
 	guestUsecase := usecase.NewGuestUsecase(guestRepo, contextRepo)
 	assetUsecase := usecase.NewAssetUsecase(assetRepo, cldName, cldKey, cldSecret)
 	contactUsecase := usecase.NewContactUsecase(contactMsgRepo)
+	rsvpUsecase := usecase.NewRSVPUsecase(rsvpRepo, guestRepo, contextRepo)
 
 	authH := http.NewAuthHandler(authUsecase)
 	themeH := http.NewThemeHandler(themeUsecase)
@@ -70,12 +72,13 @@ func main() {
 	assetH := http.NewAssetHandler(assetUsecase)
 	publicH := http.NewPublicHandler(contextUsecase, guestUsecase, themeUsecase, assetUsecase)
 	contactH := http.NewContactHandler(contactUsecase)
+	rsvpH := http.NewRSVPHandler(rsvpUsecase)
 
 	// 6. Set up Gin engine
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 
-	http.NewRouter(r, authH, themeH, contextH, guestH, assetH, publicH, contactH)
+	http.NewRouter(r, authH, themeH, contextH, guestH, assetH, publicH, contactH, rsvpH)
 
 	// 7. Start server
 	log.Printf("Server is starting and listening on port :%s", port)

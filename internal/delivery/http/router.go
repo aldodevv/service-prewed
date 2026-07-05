@@ -13,6 +13,7 @@ func NewRouter(
 	assetH *AssetHandler,
 	publicH *PublicHandler,
 	contactH *ContactHandler,
+	rsvpH *RSVPHandler,
 ) {
 	// Apply global CORS middleware
 	r.Use(CORSMiddleware())
@@ -31,6 +32,9 @@ func NewRouter(
 
 		// Public Wedding Page route
 		v1.GET("/public/wedding/:theme/:guest", publicH.GetPublicWedding)
+
+		// Public RSVP route
+		v1.POST("/public/rsvp", rsvpH.SubmitRSVP)
 
 		// Public Contact message route
 		v1.POST("/contacts", contactH.Create)
@@ -62,6 +66,9 @@ func NewRouter(
 			admin.POST("/contexts/:id/guests", guestH.Create)
 			admin.PUT("/contexts/:id/guests/:guestId", guestH.Update)
 			admin.DELETE("/contexts/:id/guests/:guestId", guestH.Delete)
+
+			// RSVP management for context
+			admin.GET("/contexts/:id/rsvps", rsvpH.GetAllByContextID)
 
 			// Asset management
 			admin.GET("/assets", assetH.GetAll)
